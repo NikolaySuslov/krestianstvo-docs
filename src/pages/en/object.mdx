@@ -1,0 +1,92 @@
+---
+title: Object
+description: Object
+layout: ../../layouts/MainLayout.astro
+---
+
+**Object** - is a Solid JS Component in form of a Function, but initialised with local properties and actions in form of Signals, registered in a [Selo](selo) component.
+[Message](message) passing is used for Object communication.
+
+Object in Krestianstvo SDK 4 application architecture is the FRP representation of the Croquet Object of shared reality / VWF Node.  
+
+Selo's root component or World is also an Object. It is initalised with more Action [Messages](message) for interacting with Selos and Objects. You can specify the type for Object, forcing it to be a World. Just add the `type` property with `App` value.
+
+Example of initializing the World object "App"
+```js
+import { createLocalStore } from "krestianstvo";
+
+export default function App(props) {
+
+  const [local, setLocal] = createLocalStore({
+    data: {
+      type: "App",
+      nodeID: props.nodeID,
+      properties: {},
+      dynamic: [],
+      dynamicSelo: [],
+    }
+  }, props)
+
+  return (<div>App ID: {local.data.nodeID}</div>)
+}
+```
+By default any Object is automatically initialized with actions: 
+`setProperty`, `doesNotUnderstand`.  
+Being a World object with type `App`, it is automatically initialized with more default actions: `deleteNode`, `createNode`, `createSelo`, `deleteSelo`. 
+Finally you can add any actions to an Object manually, or overload existing ones. 
+
+>Unique `nodeID`s are generated automatically only for Objects, that are created dynamically at runtime (if you do not specify it explicitly). But if, you define an Object statically in Solid JS component JSX file, you should give it a unique `nodeID` by yourself.
+
+## Properties
+- nodeID
+- parentID
+- name
+- selo
+- deep
+- noAvatar
+
+## Default Actions
+- setProperty
+- doesNotUnderstand
+- deleteNode
+- createNode
+- createSelo
+- deleteSelo
+
+## Examples
+
+Example of a World object with static declaration of internal object Counter with manual `nodeID`
+```js
+import { genID, createLocalStore } from "krestianstvo";
+import Counter from './Objects/Counter.jsx'
+
+export default function App(props) {
+
+    const path = import.meta.url
+
+    const [local, setLocal] = createLocalStore({
+        data: {
+            type: "App",
+            nodeID: props.nodeID,
+            properties: {},
+            dynamic: [],
+            dynamicSelo: [],
+        }
+    }, props)
+
+    return (
+        <>
+            <div>App ID: {local.data.nodeID}</div>
+            <Counter name="Counter"
+                nodeID={genID("Counter" + local.data.nodeID, path)}
+                selo={props.selo}
+                parentID={props.nodeID}
+            />
+        </>
+    )
+}
+```
+
+<hr/>
+
+[Prev](selo) | [Next](action)

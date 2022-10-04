@@ -1,0 +1,158 @@
+---
+title: Message
+description: Message
+layout: ../../layouts/MainLayout.astro
+---
+
+import Demo from './Demo.astro'
+
+**Message** is associated with an Action, that is defined in a form of a Signal/Effect pair, registered in an [Object](object) in a [Selo](selo). Actions are invoked by Message passing mechanism.
+
+Sending or Receiving a Message means setting of an Action's Signal. Functions, associated with Messages are invoked in Effects, not by direct function calls.
+
+Messages in Krestianstvo SDK 4 application architecture is the FRP representation of the Croquet Messages / VWF function calls.
+
+#### Try it!
+<div class="grid grid-cols-4">
+<Demo nodeID={"action"} seloID = {"act_1"}></Demo> 
+<Demo nodeID={"action"} seloID = {"act_1"}></Demo> 
+<Demo nodeID={"action"} seloID = {"act_1"}></Demo>
+<Demo nodeID={"action"} seloID = {"act_1"}></Demo> 
+</div>
+
+<br/>
+There are two type of Messages to distinct:
+
+### Future 
+>**Future** Messages are never going to the Network out of a Device.  
+**"Messages that are never sent, but only received"**
+
+All Future messages are locally dispatched by Virtual Time. Their execution order is synchronised on all Devices with a Tick message from Reflector server (every ~50ms by default or by an External message, stamped with Reflector). Future messages can produce other Future messages, so that order of execution on all devices will be the same.  
+Use Future messages to change an internal properties of an Object, when an updating is initiated by the internal actions of an Object itself or by some other Object  (co existing in the same Selo).
+
+There are several ways of receiving Future message in an Object:
+```js
+// Future message with relative Time parameter
+// 0 - meaning execute immediately 
+// any number > 0 will schedule the execution
+// for a number of ms in the future
+props.selo.future(props.nodeID, "add", 0, [])
+
+// Use Selo as Proxy to set message Signal
+props.selo.callAction(props.nodeID, "add", [])
+
+// Call directly function associated with Action
+// This is possible also..
+add() 
+
+//Set message Signal directly with a setter
+local.setActions["add"]([])
+
+```
+
+### External 
+>**External** Messages are all explicitly sent to the Network.  
+**"Messages that are sent from the outside of a Selo or from Side effect"**
+
+All External messages are stamped with Reflector and returned back to all connected Devices (including the device, that sent a message) for processing as Future messages.  
+Use External messages to change an internal properties of an Object, when an updating is triggered by external functions living in Side effects (e.g. Browser UI events, DOM Button click, HMD Controller position) 
+
+To send External message to an Object
+
+```js
+props.selo.sendExtMsg(
+  { id: props.nodeID, 
+    msg: "textChanged",
+    params: [value] 
+  }
+)
+```
+
+### Creating Action
+
+To create an Action for an Object, you need to define a function, that will be associated with that Action in a Signal/Effect pair. And register Message for that Object.   
+Set the 4th parameter to `true` to replace an existed Action in Object.
+
+```js
+const add = () => {
+    setLocal("data", "properties", "count", (a) => a + 1)
+}
+props.selo.createAction(props.nodeID, "add", add)
+```
+
+### Examples
+
+For example let's create "add" action for Counter Object. External message will be sent on Button click. Step on each Tick will produce a Future message. Let's also overload `doesNotUnderstand` action.
+
+
+```js
+import { createLocalStore } from 'krestianstvo'
+
+export default function App(props) {
+
+    const [local, setLocal] = createLocalStore({
+        data: {
+            type: "Node",
+            nodeID: props.nodeID,
+            name: "Counter",
+            properties: {
+                name: props.name ? props.name : props.nodeID,
+                count: 0,
+                ticking: true,
+                initialized: false
+            },
+            dynamic: []
+        }
+    }, props);
+
+    const initialize = () => {
+        props.selo.future(props.nodeID, "add", 0, [])
+    }
+
+    const add = () => {
+        setLocal("data", "properties", "count", (a) => a + 1)
+        // recursive increment counter after every Future 1s
+        props.selo.future(props.nodeID, "add", 1, [])
+    }
+
+    const reset = () => {
+        setLocal("data", "properties", "count", 0)
+    }
+
+    const step = (tick) => {
+       // do steps here on every Reflector tick
+       // props.selo.storeNode.tick
+    }
+
+    const doesNotUnderstand = () => {
+        console.log("My replaced action for doesNotUnderstand message!")
+    }
+
+
+    props.selo.createAction(props.nodeID, "initialize", initialize)
+    props.selo.createAction(props.nodeID, "add", add)
+    props.selo.createAction(props.nodeID, "reset", reset)
+    props.selo.createAction(props.nodeID, "step", step)
+    props.selo.createAction(
+        props.nodeID,
+        "doesNotUnderstand",
+        doesNotUnderstand,
+        true
+    )
+
+    function handleClick(msg) {
+        props.selo.sendExtMsg({ msg: msg, id: props.nodeID })
+    }
+
+    return (
+        <>
+            <div>{local.data.properties.count}</div>
+            <button onClick={[handleClick, "reset"]}>Reset</button>
+        </>
+    )
+}
+```
+
+<hr/>
+
+[Prev](node) | [Next](portal)

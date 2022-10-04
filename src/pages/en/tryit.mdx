@@ -1,0 +1,76 @@
+---
+title: Try it!
+description: Live Demo
+layout: ../../layouts/MainLayout.astro
+---
+import Demo from './Demo.astro'
+
+On this page you can find 4 Live different Application - Worlds. All 4 worlds and their instances are properly synchronized and produce deterministic computations without sharing any world's simulation data. Only 2D coordinates from the mouse, button clicks and text in input fields are shared.  
+This page is also a Demonstration, how Krestianstvo SDK 4 Worlds can be integrated in MDX documents and Astro web applications.  
+You are operating with a mouse simultaneously for two Clients. In Painter world each client is presented with an Avatar. Into the last Portal world you can past a links to create portals to the worlds presented in this page.  
+You can open this page in another Web Browser Tab, Window or another Device to connect more Clients. <a href="#" target="_blank">Try it!</a>  
+By default the connection id is `_docs_` for all, to change it add `/tryit?k=id` parameter with any random id from text or digits.  
+More demo worlds on external site: [Krestianstvo SDK 4 | Playground](https://play.krestianstvo.org)
+
+<hr/>
+ <div class="grid grid-cols-3 justify-items-center">
+    <div class="box text-3xl fw400">Client 1</div>
+    <div class="box text-3xl fw400">|</div>
+    <div class="box text-3xl fw400">Client 2</div>
+</div>
+<hr/>
+
+### Simple World 
+
+>Simple World show Virtual Time ticks, Counter that increment itself with future messages, and deterministic Random color generation. [code on GitHub](https://github.com/NikolaySuslov/krestianstvo-playground/blob/main/src/playground/Worlds/Simple.jsx)  
+
+click on **portal link** to copy to clipboard
+
+<div class="grid grid-cols-2 justify-items-center">
+<div class="raw-span-1 box"><Demo nodeID="simple" seloID="1" link={true}/> </div>
+<div class="raw-span-1 box"><Demo nodeID="simple" seloID="1" link={true}/> </div>
+</div>
+
+<hr/>
+
+### Counter Object
+
+>Counter Object is a World with a simple counter. Try to increment or decrement it, change the text in the field. [code on GitHub](https://github.com/NikolaySuslov/krestianstvo-playground/blob/main/src/playground/Objects/Counter.jsx)
+
+click on **portal link** to copy to clipboard
+
+<div class="grid grid-cols-2 justify-items-center">
+<div class="col-span-1 box"><Demo nodeID="counter" seloID="2" link={true}/> </div>
+<div class="col-span-1 box"><Demo nodeID="counter" seloID="2" link={true}/> </div>
+</div>
+
+<hr/>
+
+### Painter World
+
+>Painter World is the example of collaborative painting canvas. [code on GitHub](https://github.com/NikolaySuslov/krestianstvo-playground/blob/main/src/playground/Objects/PaintCanvas.jsx)
+
+click on **portal link** to copy to clipboard
+
+<div class="grid grid-cols-2 justify-items-center">
+<div class="raw-span-1 box"><Demo nodeID="painter" seloID="3" link={true}/> </div>
+<div class="raw-span-1 box"><Demo nodeID="painter" seloID="3" link={true}/> </div>
+</div>
+
+<hr/>
+
+### Portal Object
+
+>Portal World is a world with one object, which dynamically create portals onto existed worlds. [code on GitHub](https://github.com/NikolaySuslov/krestianstvo-playground/blob/main/src/playground/Objects/Portal.jsx)  
+
+**Past here into the text field any portal link from this page**   
+or enter: **painter | counter | simple | portal | 404 - to create new worlds**
+
+<div class="grid grid-cols-2 justify-items-center">
+<div class="raw-span-1 box"><Demo nodeID="portal" seloID="4" link={true}/> </div>
+<div class="raw-span-1 box"><Demo nodeID="portal" seloID="4" link={true}/> </div>
+</div>
+
+<hr/>
+
+[Prev](introduction) | [Next](architecture)

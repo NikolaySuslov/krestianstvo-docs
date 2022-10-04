@@ -1,0 +1,57 @@
+---
+title: Architecture
+description: Architecture
+layout: ../../layouts/MainLayout.astro
+---
+
+import reflector from '/images/croquet-reflector.jpg';
+import luminary from '/images/luminary.jpg';
+
+## Croquet
+
+Croquet introduced its own architecture, that allows anyone to create massively scaled collaborative applications. This architecture radically differs from well-known p2p and client-server architectures. A Reflector is used for time-stamping and heartbeat, it knows nothing about application logic and state. There are several implementations of Croquet from Smalltalk [Squeak Open Croquet](https://wiki.c2.com/?OpenCroquet) to JavaScript - [Virtual World Framework](https://en.wikipedia.org/wiki/Virtual_world_framework) and Croquet OS (https://croquet.io) - the Operating System for the Metaverse.
+
+
+## Signals & Effects
+
+[Krestianstvo SDK](https://play.krestianstvo.org/) 4 is implementing Croquet application architecture in Functional Reactive Paradigm, mainly based on **[SolidJS](https://www.solidjs.com)** and [S.JS](https://github.com/adamhaile/S). It uses just signals and reactive computations. The main types of building blocks are Components and Reactive Primitives. As Solid JS fine-grained reactivity is built on three core primitives: Signals, Memos, and Effects. Together, they form an auto-tracking synchronisation engine. Reactive computations take the form of function-wrapped expressions that execute synchronously ([more in SolidJS documentation](https://www.solidjs.com/guides/getting-started#learn-solid)).
+
+Krestianstvo uses Solid JS reactivity for implementing original scene of Croquet's Objects with Message passing and Croquet's Model — View interconnection. Croquet Models become just pure Solid JS Signals, Memos and Stores. Croquet Views become just Solid JS lightweight Components with no state and no instances. All received external messages from Reflector and all internal Future messages, that responsible for actions are wrapped in a Signals and then dispatched by an Effects accordingly. In Krestianstvo SDK 4, Croquet's Model - View is replaced with the “glitchless” automatic dependency graph with a synchronous execution engine. So you'll never experience the same moment twice or two moments at once, that is especially critical in the context of Croquet application architecture. [code on GitHub](https://github.com/NikolaySuslov/krestianstvo/blob/main/src/Krestianstvo.js)
+
+
+## Virtual Time
+
+Virtual Time is about looking at objects as a stream of messages, that leads to deterministic computations on every connected node in a decentralised network. All computations are done on every node by themselves while interpreting an internal queue of messages, which are not replicated to the network. But these queues are synchronised by external heartbeat messages coming from the Reflector - a tiny server. Also, any node’s self-generated messages, which should be distributed to other nodes are marked as external. They are explicitly routed to the Reflector, where they are stamped with the reflector’s time now and are returned to the node itself and all other nodes on the network. [code on GitHub](https://github.com/NikolaySuslov/krestianstvo/blob/main/src/VirtualTime.js)
+
+## Reflector
+
+<img src={reflector} alt="Reflector" width="80%"/>
+
+In Croquet application architecture, the Reflector while being a very tiny or even being a micro service - it remains a server.
+It uses WebSockets for coordinating clients, listing world instances connections, providing **now time** for the clients, reflecting external Croquet messages.
+It is also used for holding a list of connected clients. It stores a list of running virtual world instances and bootstraps new client connections. [code on GitHub](https://github.com/NikolaySuslov/lcs-reflector)
+
+Time is getting from a machine, running a Reflector server, then it make a stamp for a virtual world instance. Reflector send this time stamps using WebSockets. And on a client side Reflector client has a method for dispatching them in Virtual Time.
+
+## Luminary
+[**feature in work**]
+
+<img src={luminary} alt="Luminary" width="80%"/>
+
+Krestianstvo Luminary potentially could replace Reflector server in flavour of using offline-first [Gun DB](https://gun.eco/docs/Introduction) pure distributed storage system. That allows instead of ‘Reflecting’ messages with centralised Croquet’s time now, to ‘Shining’ time on every connected node using Gun’s Hypothetical Amnesia Machine, running in peer-to-peer Web. Gun's HAM combines timestamps, vector clocks, and a conflict resolution algorithm. Also to secure all external messages streams by using peer-to-peer identities and SEA cryptographic library for Gun DB. More over running Luminary on AXE blockchain.
+Krestianstvo Luminary simply transforms the only server related Croquet’s part - Reflector (taken from VWF version) into the pure peer-to-peer application, running on a client’s Web Browsers. [code on GitHub](https://github.com/NikolaySuslov/luminary)
+
+
+| | Croquet&nbsp;Reflector&nbsp;(VWF) | Krestianstvo Luminary |
+| --- | :---: | :---: |
+| **Architecture:** | Client-Server | Peer-to-Peer |
+| **Croquet time stamp:** | on server | on peer |
+| **Time now is:** | server machine’s time | GunDB HAM state: combines timestamps, vector clocks, and a conflict resolution algorithm |
+| source code | new Date( ).getTime( ) | Gun.state.is ( node, property ) |
+| **Heartbeat messages:** | by server | by selected peer |
+| **Reflector app logic:** | on server | on peer |
+| **Hosting:** | dedicated server with Web Sockets | peer’s Web Browsers connected through Daisy-chain Ad-hoc Mesh-network (for swapping in different transport layers: Web Sockets, WebRTC, etc.) |
+
+[Prev](tryit) | [Next](development)
+
+

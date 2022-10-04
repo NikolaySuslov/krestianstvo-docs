@@ -1,0 +1,9 @@
+---
+import './index.css'
+import 'unocss-hmr-fix'
+import Start from "./Start.jsx";
+const { nodeID, seloID, link } = Astro.props
+---
+
+<Start client:only="solid-js" nodeID={nodeID ? nodeID: "simple"} seloID = {seloID ? seloID: ""} link={link ? link : false}></Start>
+
