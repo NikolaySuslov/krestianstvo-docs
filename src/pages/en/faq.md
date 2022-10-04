@@ -52,4 +52,4 @@ No. Portal is just a pure function in form of Solid JS component. Thus, portal c
 #### 10. Does Portals support linking to themselves?
 Yes. Portals are recursive. By default portal's recursion depth is set to **2**. Use parameter **d** in the url to set the depth manually.
 
-[Prev](deployment) | [Next](selo)
+[Prev](/en/deployment) | [Next](/en/selo)
