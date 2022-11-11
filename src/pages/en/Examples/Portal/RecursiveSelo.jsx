@@ -2,7 +2,7 @@
 import { genID, createLocalStore, Selo } from "krestianstvo";
 import { createSignal, createEffect } from "solid-js";
 
-import DefaultAvatar from "../../Playground/DefaultAvatar"
+import DefaultAvatar from "../../playground/DefaultAvatar"
 
 export default function App(props) {
 

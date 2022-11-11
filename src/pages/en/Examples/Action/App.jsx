@@ -1,8 +1,8 @@
 /** @jsxImportSource solid-js */
 import { createSignal } from 'solid-js';
 import { createLocalStore } from 'krestianstvo'
-import VButton from '../../Playground/View/VButton'
-import DefaultAvatar from "../../Playground/DefaultAvatar"
+import VButton from '../../playground/View/VButton'
+import DefaultAvatar from "../../playground/DefaultAvatar"
 
 export default function App(props) {
 
