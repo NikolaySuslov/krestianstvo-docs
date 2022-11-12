@@ -86,6 +86,6 @@ export const SIDEBAR: Sidebar = {
 	}
 };
 
-export const REFLECTOR_HOST = "https://time.luminary.su"
+export const REFLECTOR_HOST = "https://time.krestianstvo.org"
 //"https://time.krestianstvo.org"
 //"https://localhost:3001"
