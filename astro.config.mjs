@@ -3,8 +3,9 @@ import preact from '@astrojs/preact';
 import react from '@astrojs/react';
 import solidJs from "@astrojs/solid-js";
 import mdx from '@astrojs/mdx';
-import uno from 'astro-uno'
-import { presetUno, presetAttributify } from 'unocss'
+import UnoCSS from '@unocss/astro'
+import presetAttributify from '@unocss/preset-attributify'
+import presetUno from '@unocss/preset-uno'
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,9 +15,15 @@ export default defineConfig({
 		solidJs(),
 		preact(), // Enable React for the Algolia search component.
 		react(),
-		uno({
-			presets: [presetUno(), presetAttributify({ /* preset options */ })]
-		})
+		UnoCSS(
+			{
+				presets: [
+				presetUno(),
+				  presetAttributify({ /* options */ })
+				  // ...other presets
+				]
+			}
+		)
 	],
 	site: `http://docs.krestianstvo.org`,
 	markdown: {
